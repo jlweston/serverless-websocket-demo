@@ -1,0 +1,4 @@
+node_modules
+.serverless
+frontend/client/dist/**
+.DS_Store

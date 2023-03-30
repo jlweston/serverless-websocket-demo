@@ -1,0 +1,25 @@
+service: frontend
+
+provider:
+  name: aws
+
+plugins:
+  - serverless-finch
+  - serverless-plugin-scripts
+
+custom:
+  webSocketUri: ${param:webSocketUri, ''}
+  client:
+    bucketName: serverless-framework-knowledge-share
+    objectHeaders:
+      ALL_OBJECTS:
+        - name: Cache-Control
+          value: max-age=100
+  scripts:
+    hooks:
+      'before:deploy:deploy': >
+        rm -rf client/dist &&
+        mkdir client/dist &&
+        cp client/src/* client/dist &&
+        sed -i '' -e 's=\"wss.*\"=\"${self:custom.webSocketUri}\"=' client/dist/index.js &&
+        serverless client deploy --no-confirm
